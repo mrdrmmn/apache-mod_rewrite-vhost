@@ -1,0 +1,30 @@
+# These rewrite rules are intended to be placed in a .htaccess file in the
+# DocumentRoot of your default virtual host.  Assuming mod_rewrite is loaded,
+# these rules will look at the hostname requested and if a hostname specific
+# directory can be located, it will be redirect the request into that 
+# directory.  If a hostname specific directory cannot be found, it will
+# redirect the request into the 'default' directory.
+#
+# For example, if a request is made for 'foo.bar.domain.com', it will look
+# for a directory named 'foo.bar.domain.com'.  If it exists, the request will
+# be served from 'foo.bar.domain.com/html'.  If it does not exists, it will
+# start the process over, but this time looking for 'bar.domain.com'.  This
+# process is repeated until a directory is found.  If we get all the way to
+# 'domain.com' and a directory still has not been found, the request will be
+# served from 'default/html'.  If this doesn't exist, a 404 error will occur.
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteRule ^((?:[^\./]+\.)?([^/]+))(/(?:html|cgi-bin)(?:/.*|$)) - [E=cur_dir:$1,E=new_dir:$2,E=path:$3,S=2]
+    RewriteRule ^cgi-bin(?:/.*|$) %{SERVER_NAME}%{REQUEST_URI} [N]
+    RewriteRule .? %{SERVER_NAME}/html%{REQUEST_URI} [N]
+
+RewriteCond %{DOCUMENT_ROOT}/%{ENV:cur_dir} !-d
+RewriteCond %{ENV:new_dir} \.
+RewriteRule .? %{ENV:new_dir}%{ENV:path} [N]
+
+RewriteCond %{DOCUMENT_ROOT}/%{ENV:cur_dir} !-d
+RewriteCond %{ENV:cur_dir} !^/default$
+RewriteRule .? default%{ENV:path}
+
