@@ -20,11 +20,12 @@
     RewriteRule ^cgi-bin(?:/.*|$) %{SERVER_NAME}%{REQUEST_URI} [N]
     RewriteRule .? %{SERVER_NAME}/html%{REQUEST_URI} [N]
 
-RewriteCond %{DOCUMENT_ROOT}/%{ENV:cur_dir} !-d
-RewriteCond %{ENV:new_dir} \.
-RewriteRule .? %{ENV:new_dir}%{ENV:path} [N]
+    RewriteCond %{DOCUMENT_ROOT}/%{ENV:cur_dir} !-d
+    RewriteCond %{ENV:new_dir} \.
+    RewriteRule .? %{ENV:new_dir}%{ENV:path} [N]
 
-RewriteCond %{DOCUMENT_ROOT}/%{ENV:cur_dir} !-d
-RewriteCond %{ENV:cur_dir} !^/default$
-RewriteRule .? default%{ENV:path}
+    RewriteCond %{DOCUMENT_ROOT}/%{ENV:cur_dir} !-d
+    RewriteCond %{ENV:cur_dir} !^/default$
+    RewriteRule .? default%{ENV:path}
+</IfModule>
 
